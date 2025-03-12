@@ -1,25 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import "./App.css";
 
 type Cell = ["X" | "O" | "", boolean];
 type CellsState = Record<number, Cell>;
-
-export function Square({
-  shape,
-  index,
-}: {
-  shape: "X" | "O" | "";
-  index: number;
-}) {
-  return (
-    <div
-      key={index}
-      className={`w-[30px] h-[30px] text-center  m-2.5  text-xl p-auto  `}
-    >
-      {shape}
-    </div>
-  );
-}
 
 function App() {
   const [shape, setShape] = useState<"X" | "O" | "">("");
@@ -89,6 +71,7 @@ function App() {
   }, [cells]);
 
   function resetCells() {
+    setShape("");
     setCells({
       1: ["", false],
       2: ["", false],
@@ -103,50 +86,133 @@ function App() {
   }
 
   return (
-    <div className="max-w-44 h-44">
-      Select first shape
-      <div className="flex flex-row  justify-center mb-3">
-        {/* <div className=" mb-5 text-center p-auto flex flex-row align-middle w-full "> */}
-        <div
-          onClick={() => {
-            if (shape === "") {
-              setShape("X");
-            }
-          }}
-          className=" w-[40px] h-[40px] text-center  m-0.5 shadow-2xl shadow-gray-500  py-1 text-2xl border-[0.1px] border-gray-500"
-        >
-          X
-        </div>
-        <div
-          onClick={() => {
-            if (shape === "") {
-              setShape("O");
-            }
-          }}
-          className=" w-[40px] h-[40px] text-center  m-0.5  py-1 text-2xl shadow-2xl shadow-gray-500 border-[0.1px] border-gray-500"
-        >
-          O
-        </div>
-        <div
-          onClick={resetCells}
-          className="w-[70px] h-[40px] border-[0.1px] m-0.5 border-gray-500 shadow-2xl shadow-gray-500 bg-red-900 py-1 text-xl text-white text-center "
-        >
-          Reset
-        </div>
+    <div className="min-h-dvh max-w-md mx-auto bg-gradient-to-br from-0% from-sky-400 to-sky-900 text-white w-full flex flex-col">
+      <div className="flex-grow w-full flex flex-col items-center justify-center h-full">
+        {!shape && (
+          <div className="flex flex-col gap-4 justify-center">
+            <h1 className="text-lg font-black">Please select shape</h1>
+            <div className="flex flex-row justify-center">
+              <div className="flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => setShape("X")}
+                  className="bg-white rounded-2xl size-24 font-bold text-7xl cursor-pointer"
+                >
+                  <svg
+                    width="90"
+                    height="90"
+                    viewBox="0 0 90 90"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      opacity="0.8"
+                      d="M25 27L44.9526 46.9526M64.9052 66.9052L44.9526 46.9526M44.9526 46.9526L25 66.9052M44.9526 46.9526L64.9052 27"
+                      stroke="#F54D62"
+                      strokeWidth="10"
+                      strokeLinecap="round"
+                      strokeLinejoin="bevel"
+                    />
+                  </svg>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShape("O")}
+                  className="bg-white rounded-2xl size-24 font-bold text-7xl cursor-pointer"
+                >
+                  <svg
+                    width="90"
+                    height="90"
+                    viewBox="0 0 90 90"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      opacity="0.8"
+                      cx="46.0429"
+                      cy="48.0429"
+                      r="20.0429"
+                      stroke="#87E43A"
+                      strokeWidth="10"
+                      strokeLinecap="round"
+                      strokeLinejoin="bevel"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {shape && (
+          <button
+            type="button"
+            onClick={resetCells}
+            className="rounded-lg bg-white px-8 py-2 text-2xl cursor-pointer text-sky-950 font-semibold"
+          >
+            Reset
+          </button>
+        )}
       </div>
+
       {/* --------------------------------------------------- */}
       {shape && (
-        <div>
-          <div className="grid grid-cols-3 gap-1 mb-4 justify-center p-1  border-2 border-gray-500 m-auto">
+        <div className="flex-grow flex-shrink-0 px-8">
+          <div className="grid grid-cols-3 grid-rows-3 justify-center overflow-hidden rounded-2xl bg-white aspect-square">
             {Array.from({ length: 9 }, (_, i) => i + 1).map((i) => (
-              <div
+              <button
+                type="button"
+                key={i}
                 onClick={() => detectBox(i)}
-                className={`${
-                  cells[i][1] ? "bg-green-500 border-none" : ""
-                } border-[0.1px] border-gray-500`}
+                className={`text-black font-bold text-4xl flex justify-center items-center border-[0.25px] border-gray-300 ${
+                  cells[i][1] ? "" : "bg-transparent"
+                } `}
               >
-                <Square shape={cells[i][0]} index={i} />
-              </div>
+                {cells[i][0] === "X" ? (
+                  <svg
+                    width="90"
+                    height="90"
+                    viewBox="0 0 90 90"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      opacity="0.8"
+                      d="M25 27L44.9526 46.9526M64.9052 66.9052L44.9526 46.9526M44.9526 46.9526L25 66.9052M44.9526 46.9526L64.9052 27"
+                      stroke="#F54D62"
+                      strokeWidth="10"
+                      strokeLinecap="round"
+                      strokeLinejoin="bevel"
+                    />
+                  </svg>
+                ) : (
+                  ""
+                )}
+
+                {cells[i][0] === "O" ? (
+                  <svg
+                    width="90"
+                    height="90"
+                    viewBox="0 0 90 90"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      opacity="0.8"
+                      cx="46.0429"
+                      cy="48.0429"
+                      r="20.0429"
+                      stroke="#87E43A"
+                      strokeWidth="10"
+                      strokeLinecap="round"
+                      strokeLinejoin="bevel"
+                    />
+                  </svg>
+                ) : (
+                  ""
+                )}
+              </button>
             ))}
           </div>
         </div>
