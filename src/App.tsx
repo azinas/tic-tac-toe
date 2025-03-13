@@ -5,6 +5,7 @@ type CellsState = Record<number, Cell>;
 
 function App() {
   const [shape, setShape] = useState<"X" | "O" | "">("");
+  const [isFinished, setIsFinished] = useState<boolean>(false);
   const [cells, setCells] = useState<CellsState>({
     1: ["", false],
     2: ["", false],
@@ -29,21 +30,26 @@ function App() {
   ];
 
   function detectBox(index: number) {
-    if (!Object.values(cells).every((value) => value[0] === "")) {
-      setShape((prevShape) => {
-        const newShape = prevShape === "X" ? "O" : "X";
-        setCells((prevCells: CellsState) => {
-          return { ...prevCells, [index]: [newShape, false] };
+    if (!isFinished) {
+      if (!Object.values(cells).every((value) => value[0] === "")) {
+        setShape((prevShape) => {
+          const newShape = prevShape === "X" ? "O" : "X";
+          setCells((prevCells: CellsState) => {
+            return {
+              ...prevCells,
+              [index]: [prevCells[index][0] || newShape, false],
+            };
+          });
+
+          return newShape;
         });
-        return newShape;
-      });
-    } else {
-      setCells((prevCells) => {
-        return { ...prevCells, [index]: [shape, false] };
-      });
+      } else {
+        setCells((prevCells) => {
+          return { ...prevCells, [index]: [shape, false] };
+        });
+      }
     }
   }
-
   const isWin = useCallback(() => {
     setCells((prevCells) => {
       const newCells = { ...prevCells };
@@ -58,6 +64,7 @@ function App() {
             if (!newCells[i][1]) {
               newCells[i] = [newCells[i][0], true];
               updated = true;
+              setIsFinished(true);
             }
           });
         }
@@ -72,6 +79,7 @@ function App() {
 
   function resetCells() {
     setShape("");
+    setIsFinished(false);
     setCells({
       1: ["", false],
       2: ["", false],
@@ -149,10 +157,21 @@ function App() {
           <button
             type="button"
             onClick={resetCells}
-            className="rounded-lg bg-white px-8 py-2 text-2xl cursor-pointer text-sky-950 font-semibold"
+            className="rounded-lg bg-white px-8 py-2 text-2xl cursor-pointer text-sky-950 font-semibold mx-auto"
           >
             Reset
           </button>
+        )}
+        {isFinished && (
+          <div className="rounded-lg bg-sky-200 mt-10 px-8 py-2 text-2xl text-sky-950 font-semibold mx-auto ">
+            {`"${shape}" Success`}
+          </div>
+        )}
+
+        {Object.values(cells).filter((x) => x[0] !== "").length === 9 && (
+          <div className="rounded-lg bg-sky-200 mt-10 px-8 py-2 text-2xl text-sky-950 font-semibold mx-auto ">
+            The game is tied
+          </div>
         )}
       </div>
 
