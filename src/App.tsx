@@ -168,11 +168,12 @@ function App() {
           </div>
         )}
 
-        {Object.values(cells).filter((x) => x[0] !== "").length === 9 && (
-          <div className="rounded-lg bg-sky-200 mt-10 px-8 py-2 text-2xl text-sky-950 font-semibold mx-auto ">
-            The game is tied
-          </div>
-        )}
+        {!isFinished &&
+          Object.values(cells).filter((x) => x[0] !== "").length === 9 && (
+            <div className="rounded-lg bg-sky-200 mt-10 px-8 py-2 text-2xl text-sky-950 font-semibold mx-auto ">
+              The game is tied
+            </div>
+          )}
       </div>
 
       {/* --------------------------------------------------- */}
